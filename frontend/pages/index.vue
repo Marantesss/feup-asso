@@ -17,8 +17,8 @@ export default {
     return {
       // create an array with nodes
       nodes: [
-        { id: 1, label: 'Node 1' },
-        { id: 2, label: 'Node 2' },
+        { id: 1, label: 'Node 1', group: 'deprecatedGroup' },
+        { id: 2, label: 'Node 2', color: '#ff0000', group: 'deprecatedGroup' },
         { id: 3, label: 'Node 3' },
         { id: 4, label: 'Node 4' },
         { id: 5, label: 'Node 5' },
@@ -30,7 +30,18 @@ export default {
         { from: 2, to: 4 },
         { from: 2, to: 5 },
       ],
-      options: {},
+      options: {
+        // group styles
+        groups: {
+          deprecatedGroup: {
+            color: { background: 'red' },
+            borderWidth: 3,
+          },
+        },
+        autoResize: true, // the Network will automatically detect when its container is resized, and redraw itself accordingly.
+        width: '100%',
+        height: '100%',
+      },
     }
   },
 }
