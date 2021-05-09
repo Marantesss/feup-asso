@@ -23,6 +23,5 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "madge": "^4.0.2"
   }
 }
