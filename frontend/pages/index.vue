@@ -1,17 +1,26 @@
 <template>
-  <Network
-    id="main-network"
-    ref="mynetwork"
-    :nodes="nodes"
-    :edges="edges"
-    :options="options"
-  >
-  </Network>
+  <div>
+    <FormCard @submitRepoUrl="analyzeRepo" />
+    <Network
+      id="main-network"
+      ref="mynetwork"
+      :nodes="nodes"
+      :edges="edges"
+      :options="options"
+    >
+    </Network>
+  </div>
 </template>
 
 <script>
+import FormCard from '~/components/FormCard'
+
 export default {
   name: 'Vis',
+
+  components: {
+    FormCard,
+  },
 
   data() {
     return {
@@ -44,16 +53,23 @@ export default {
       },
     }
   },
+
+  methods: {
+    analyzeRepo(repoUrl) {
+      console.log(repoUrl)
+    },
+  },
 }
 </script>
 
 <style>
 #main-network {
-  position: fixed;
+  position: absolute;
   left: 0px;
   top: 0px;
   bottom: 0px;
   right: 0px;
+  padding-left: 24rem;
   min-height: 100vh;
   /* background-color: aquamarine; */
 }
