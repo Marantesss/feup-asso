@@ -1,3 +1,12 @@
+/*
+ * Define colors
+ */
+:root {
+  --main-blue: #1E88E5;
+  --main-dark-blue: #0969bd;
+  --main-grey: #54575a;
+}
+
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -23,7 +32,7 @@ html {
 .button {
   border: 0;
   border-radius: 0.25rem;
-  background: #1E88E5;
+  background: var(--main-blue);
   color: white;
   font-size: 1rem;
   line-height: 1.2;
@@ -35,7 +44,7 @@ html {
 }
 
 .button:hover {
-  background: #0969bd;
+  background: var(--main-dark-blue);
 }
 
 /**

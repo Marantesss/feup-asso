@@ -1,6 +1,12 @@
 <template>
   <div>
-    <FormCard @submitRepoUrl="analyzeRepo" />
+    <SideBar @submitRepoUrl="analyzeRepo" />
+    <div
+      v-if="loading"
+      :class="[{ 'spinner-container-focus': loading }, 'spinner-container']"
+    >
+      <Spinner />
+    </div>
     <Network
       id="main-network"
       ref="mynetwork"
@@ -13,17 +19,21 @@
 </template>
 
 <script>
-import FormCard from '~/components/FormCard'
+import SideBar from '~/components/SideBar'
+import Spinner from '~/components/helpers/Spinner'
 
 export default {
   name: 'Vis',
 
   components: {
-    FormCard,
+    SideBar,
+    Spinner,
   },
 
   data() {
     return {
+      loading: false,
+      error: false,
       // create an array with nodes
       nodes: [
         { id: 1, label: 'Node 1', group: 'deprecatedGroup' },
@@ -55,14 +65,43 @@ export default {
   },
 
   methods: {
-    analyzeRepo(repoUrl) {
+    async analyzeRepo(repoUrl) {
+      this.loading = true
       console.log(repoUrl)
+      /*
+      const res = await this.$axios.get('/', {
+        repoUrl,
+      })
+      console.log(res)
+      */
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      this.loading = false
     },
   },
 }
 </script>
 
 <style>
+.spinner-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  margin-left: 24rem;
+  min-height: 100vh;
+  min-width: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.spinner-container-focus {
+  background-color: var(--main-grey);
+}
+
 #main-network {
   position: absolute;
   left: 0px;
