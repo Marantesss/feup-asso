@@ -1,3 +1,4 @@
+import Dependable from '../Dependable';
 import ProjectTree from '../ProjectTree';
 import NodeComponent from './NodeComponent';
 import NodeDependable from './NodeDependable';
@@ -44,21 +45,19 @@ function createPath(root: NodeDependable, path: string[]): NodeDependable {
 
 function parse(tree: any, projectName: string): ProjectTree {
   const root = new NodePackage(projectName);
-  const fileMapping: { [path: string]: NodeComponent } = {};
+  const fileMapping: { [path: string]: NodeDependable } = {};
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(tree)) {
     const path = splitPath(key);
-    const newComponent: NodeComponent = createPath(root, path);
+    const newComponent: Dependable = createPath(root, path);
     fileMapping[key] = newComponent;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(tree)) {
     tree[key].forEach(
       (dep: string) => {
         if (isNodeModule(dep)) {
-          const newComponent: NodeComponent = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))));
+          const newComponent: NodeDependable = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))));
           fileMapping[key] = newComponent;
         }
 

@@ -17,6 +17,8 @@
     "rules": {
         "no-console":"off", // TODO: remove
         "max-len": "off" , // TODO: remove
+        "no-underscore-dangle": "off",
+        "no-restricted-syntax": "off", // TODO: maybe remove 
         "import/extensions": [
             "error",
             "ignorePackages",
