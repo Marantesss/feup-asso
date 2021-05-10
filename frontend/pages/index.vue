@@ -2,23 +2,29 @@
   <div>
     <SideBar @submitRepoUrl="analyzeRepo" />
     <div
-      v-if="!loading"
-      :class="[{ 'spinner-container-focus': !loading }, 'spinner-container']"
+      v-if="loading"
+      :class="[{ 'spinner-container-focus': loading }, 'spinner-container']"
     >
       <Spinner />
     </div>
     <Network
       id="main-network"
       ref="mynetwork"
+      :class="{ close: !sidebarOpen, open: sidebarOpen }"
       :nodes="nodes"
       :edges="edges"
       :options="options"
     >
     </Network>
+    <button class="button toggle-sidebar-button" @click="toggleSidebar">
+      Toggle Sidebar
+    </button>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 import SideBar from '~/components/SideBar'
 import Spinner from '~/components/helpers/Spinner'
 
@@ -64,6 +70,10 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters(['sidebarOpen']),
+  },
+
   methods: {
     async analyzeRepo(repoUrl) {
       this.loading = true
@@ -77,11 +87,21 @@ export default {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       this.loading = false
     },
+    ...mapActions({
+      toggleSidebar: 'toggleSidebar',
+    }),
   },
 }
 </script>
 
 <style>
+.toggle-sidebar-button {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+  z-index: 10;
+}
+
 .spinner-container {
   position: absolute;
   left: 0px;
@@ -98,7 +118,15 @@ export default {
 }
 
 .spinner-container-focus {
-  background-color: var(--main-grey);
+  background-color: var(--main-grey-opaque);
+}
+
+.close {
+  padding-left: 0rem;
+}
+
+.open {
+  padding-left: 24rem;
 }
 
 #main-network {
@@ -107,7 +135,6 @@ export default {
   top: 0px;
   bottom: 0px;
   right: 0px;
-  padding-left: 24rem;
   min-height: 100vh;
   /* background-color: aquamarine; */
 }
