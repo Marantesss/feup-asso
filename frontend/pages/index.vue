@@ -2,8 +2,8 @@
   <div>
     <SideBar @submitRepoUrl="analyzeRepo" />
     <div
-      v-if="loading"
-      :class="[{ 'spinner-container-focus': loading }, 'spinner-container']"
+      v-if="!loading"
+      :class="[{ 'spinner-container-focus': !loading }, 'spinner-container']"
     >
       <Spinner />
     </div>
@@ -90,7 +90,6 @@ export default {
   right: 0px;
   margin-left: 24rem;
   min-height: 100vh;
-  min-width: 100vh;
 
   display: flex;
   justify-content: center;
