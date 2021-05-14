@@ -1,13 +1,16 @@
+const baseUrl = process.env.NUXT_ENV_BASE_URL || 'http://localhost:3000'
+const apiUrl = process.env.NUXT_ENV_API_URL || 'http://localhost:8010'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'frontend',
+    title: 'Dependency Manager Visualization',
     htmlAttrs: {
       lang: 'en',
     },
@@ -19,11 +22,20 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  env: {
+    baseUrl,
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['~assets/css/styles', '~assets/css/reset'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    // https://nuxtjs.org/docs/2.x/directory-structure/plugins
+    // this plugin must be loaded as client side only, else there are problems
+    // problems with the building phase due to unexpected tokens
+    '~/plugins/vue-visjs.client.js',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -41,7 +53,9 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    baseURL: apiUrl, // Used as fallback if no runtime config is provided
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
