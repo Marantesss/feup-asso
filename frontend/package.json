@@ -15,7 +15,7 @@
     "core-js": "^3.9.1",
     "d3": "^6.7.0",
     "nuxt": "^2.15.3",
-    "vue-visjs": "^0.4.2",
+    "vue-visjs": "0.6.0",
     "xss": "^1.0.8"
   },
   "devDependencies": {

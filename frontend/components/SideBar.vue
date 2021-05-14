@@ -41,10 +41,6 @@ export default {
 </script>
 
 <style scoped>
-.toggle-sidebar-button {
-  position: absolute;
-}
-
 .title-section {
   margin: 2rem 0rem;
 }
