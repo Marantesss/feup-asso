@@ -18,7 +18,7 @@ function isNodeModule(path: string): boolean {
   return path.indexOf('node_modules') !== -1;
 }
 
-function createPath(root: NodeDependable, path: string[]): NodeDependable {
+function createPath(root: NodeDependable, path: string[], isNpm: boolean = false): NodeDependable {
   if (path.length === 0) {
     return root;
   }
@@ -27,19 +27,19 @@ function createPath(root: NodeDependable, path: string[]): NodeDependable {
 
   for (const child of children) {
     if (child.getName() === path[0]) {
-      return createPath(child, path.slice(1));
+      return createPath(child, path.slice(1), isNpm);
     }
   }
 
   if (isFile(path[0])) {
-    const newComponent = new NodeComponent(path[0]);
+    const newComponent = new NodeComponent(path[0], [], [], isNpm);
     children.push(newComponent);
     return newComponent;
   }
 
-  const newPackage: NodePackage = new NodePackage(path[0]);
+  const newPackage: NodePackage = new NodePackage(path[0], [], [], isNpm);
   children.push(newPackage);
-  return createPath(newPackage, path.slice(1));
+  return createPath(newPackage, path.slice(1), isNpm);
 }
 
 function parse(tree: any, projectName: string): ProjectTree {
@@ -56,8 +56,7 @@ function parse(tree: any, projectName: string): ProjectTree {
     tree[key].forEach(
       (dep: string) => {
         if (isNodeModule(dep)) {
-          const newComponent: NodeDependable = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))));
-          newComponent.isNpm = true;
+          const newComponent: NodeDependable = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))), true);
           fileMapping[key] = newComponent;
         }
 
