@@ -2,24 +2,22 @@ import Visitor from './Visitor';
 import Annotation from './Annotation';
 import Visitable from './Visitable';
 
-abstract class Dependable implements Visitable {
-  private dependencies: Dependable[];
+abstract class Dependable<T extends any> implements Visitable {
+  protected dependencies: T[];
 
-  private annotations: Annotation[];
+  protected annotations: Annotation[];
 
   private name: string;
 
-  constructor(name: string, dependencies: Dependable[] = [], annotations: Annotation[] = []) {
+  constructor(name: string, dependencies: T[] = [], annotations: Annotation[] = []) {
     this.dependencies = dependencies;
     this.name = name;
     this.annotations = annotations;
   }
 
-  public accept(visitor: Visitor): void {
-    visitor.visit(this);
-  }
+  public abstract accept(visitor: Visitor): void
 
-  public addDependency(dependency: Dependable) {
+  public addDependency(dependency: T) {
     this.dependencies.push(dependency);
   }
 
@@ -27,7 +25,7 @@ abstract class Dependable implements Visitable {
     this.annotations.push(annotation);
   }
 
-  public getDependencies(): Dependable[] {
+  public getDependencies(): T[] {
     return this.dependencies;
   }
 

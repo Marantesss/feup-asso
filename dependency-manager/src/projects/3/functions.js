@@ -1,7 +1,7 @@
 const aux = require('./functions2');
 
 function getMeaningOfLife() {
-  return 41;
+  return aux();
 }
 
 export default getMeaningOfLife;

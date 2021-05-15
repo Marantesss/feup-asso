@@ -1,6 +1,10 @@
-import Component from '../Component';
+import NodeDependable from './NodeDependable';
+import NodeVisitor from './NodeVisitor';
 
-class NodeComponent extends Component {
+class NodeComponent extends NodeDependable {
+  public accept(visitor: NodeVisitor): void {
+    visitor.visitComponent(this);
+  }
 }
 
 export default NodeComponent;

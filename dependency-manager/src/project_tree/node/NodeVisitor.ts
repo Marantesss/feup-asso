@@ -1,10 +1,11 @@
-import Component from '../Component';
-import Package from '../Package';
 import Visitor from '../Visitor';
+import NodeComponent from './NodeComponent';
+import NodePackage from './NodePackage';
 
-class NodeVisitor extends Visitor {
-  public visit(pack: NodePackage): void;
-  public visit(component: Component): void;
+abstract class NodeVisitor implements Visitor {
+  public abstract visitPackage(pack: NodePackage): void;
+
+  public abstract visitComponent(component: NodeComponent): void;
 }
 
 export default NodeVisitor;

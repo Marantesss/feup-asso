@@ -1,4 +1,3 @@
-import Dependable from '../Dependable';
 import ProjectTree from '../ProjectTree';
 import NodeComponent from './NodeComponent';
 import NodeDependable from './NodeDependable';
@@ -26,9 +25,9 @@ function createPath(root: NodeDependable, path: string[]): NodeDependable {
 
   const children: NodeDependable[] = root.getDependencies();
 
-  for (let i = 0; i < children.length; i += 1) {
-    if (children[i].getName() === path[0]) {
-      return createPath(children[i], path.slice(1));
+  for (const child of children) {
+    if (child.getName() === path[0]) {
+      return createPath(child, path.slice(1));
     }
   }
 
@@ -49,7 +48,7 @@ function parse(tree: any, projectName: string): ProjectTree {
 
   for (const key of Object.keys(tree)) {
     const path = splitPath(key);
-    const newComponent: Dependable = createPath(root, path);
+    const newComponent: NodeDependable = createPath(root, path);
     fileMapping[key] = newComponent;
   }
 
@@ -58,6 +57,7 @@ function parse(tree: any, projectName: string): ProjectTree {
       (dep: string) => {
         if (isNodeModule(dep)) {
           const newComponent: NodeDependable = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))));
+          newComponent.isNpm = true;
           fileMapping[key] = newComponent;
         }
 

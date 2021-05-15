@@ -1,30 +1,13 @@
 import Dependable from '../Dependable';
+import NodeAnnotation from './NodeAnnotation';
+import NodeVisitor from './NodeVisitor';
 
-// class NodeDependable extends Dependable {
-//   private _isNpm: boolean;
-
-//   constructor(name: string, dependencies: NodeDependable[] = [], annotations: NodeAnnotation[] = [], isNpm: boolean = false) {
-//     super(name, dependencies, annotations);
-//     this._isNpm = isNpm;
-//   }
-
-//   public set isNpm(value: boolean) {
-//     this._isNpm = value;
-//   }
-
-//   public get isNpm() {
-//     return this._isNpm;
-//   }
-// }
-
-class NodeDependable {
+abstract class NodeDependable extends Dependable<NodeDependable> {
   private _isNpm: boolean;
 
-  private dependable: Dependable;
-
-  constructor(dependable: Dependable, isNpm: boolean = false) {
+  constructor(name: string, dependencies: NodeDependable[] = [], annotations: NodeAnnotation[] = [], isNpm: boolean = false) {
+    super(name, dependencies, annotations);
     this._isNpm = isNpm;
-    this.dependable = dependable;
   }
 
   public set isNpm(value: boolean) {
@@ -34,6 +17,8 @@ class NodeDependable {
   public get isNpm() {
     return this._isNpm;
   }
+
+  public abstract accept(visitor: NodeVisitor): void;
 }
 
 export default NodeDependable;
