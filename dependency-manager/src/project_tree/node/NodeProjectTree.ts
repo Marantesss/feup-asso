@@ -3,7 +3,16 @@ import NodeComponent from './NodeComponent';
 import NodeDependable from './NodeDependable';
 import NodePackage from './NodePackage';
 
-class NodeProjectTree extends ProjectTree {
+class NodeProjectTree implements ProjectTree {
+  private root: NodeDependable;
+
+  constructor(root: NodeDependable) {
+    this.root = root;
+  }
+
+  public getRoot(): NodeDependable {
+    return this.root;
+  }
 }
 
 function isFile(candidate: string): boolean {
@@ -42,7 +51,7 @@ function createPath(root: NodeDependable, path: string[], isNpm: boolean = false
   return createPath(newPackage, path.slice(1), isNpm);
 }
 
-function parse(tree: any, projectName: string): ProjectTree {
+function parse(tree: any, projectName: string): NodeProjectTree {
   const root = new NodePackage(projectName);
   const fileMapping: { [path: string]: NodeDependable } = {};
 
@@ -57,9 +66,8 @@ function parse(tree: any, projectName: string): ProjectTree {
       (dep: string) => {
         if (isNodeModule(dep)) {
           const newComponent: NodeDependable = createPath(root, splitPath(dep.substr(dep.indexOf('node_modules'))), true);
-          fileMapping[key] = newComponent;
+          fileMapping[dep] = newComponent;
         }
-
         fileMapping[key].addDependency(fileMapping[dep]);
       },
     );
