@@ -3,7 +3,7 @@ import NodeDependable from './NodeDependable';
 class NodeTreeDepthFirstIterator {
   private root: NodeDependable;
 
-  private current: NodeDependable;
+  private current: NodeDependable | undefined;
 
   private visited: NodeDependable[];
 
@@ -25,16 +25,23 @@ class NodeTreeDepthFirstIterator {
       return;
     }
 
-    this.visited.push(this.current);
+    this.visited.push(this.current!);
     this.current = this.toVisit.shift()!;
-    this.toVisit = [...this.current.getDependencies().filter((dep) => !this.visited.includes(dep) && !this.toVisit.includes(dep)), ...this.toVisit];
+
+    if (this.current) {
+      this.toVisit = [...this.current.getDependencies().filter((dep) => !this.visited.includes(dep) && !this.toVisit.includes(dep)), ...this.toVisit];
+    }
   }
 
   public get isDone(): boolean {
-    return this.toVisit.length === 0;
+    return this.toVisit.length === 0 && this.current === undefined;
   }
 
   public currentItem(): NodeDependable {
+    if (!this.current) {
+      throw new Error('Iteration over');
+    }
+
     return this.current;
   }
 }

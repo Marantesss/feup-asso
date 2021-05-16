@@ -4,7 +4,7 @@ import NodeAuditVisitor from './project_tree/node/visitors/NodeAuditVisitor';
 
 const madge = require('./adapted_modules/madge');
 
-madge('src/projects/3', { includeNpm: true }).then(async (dependencies: any) => {
+madge('src/projects/2', { includeNpm: true }).then(async (dependencies: any) => {
   const depObj = dependencies.obj();
   const tree: NodeProjectTree = parse(depObj, 'cimba_sinf');
 
@@ -13,7 +13,7 @@ madge('src/projects/3', { includeNpm: true }).then(async (dependencies: any) => 
 
   await auditVisitor.build('src/projects/2');
   while (!iterator.isDone) {
-    iterator.currentItem().accept(auditVisitor);
+    iterator.currentItem()!.accept(auditVisitor);
     iterator.next();
   }
 
