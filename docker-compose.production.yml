@@ -1,0 +1,31 @@
+version: "3.1"
+
+services:
+
+  api:
+    image: livesd/dependency-manager
+    restart: unless-stopped
+    build:
+      context: ./dependency-manager/
+      dockerfile: Dockerfile.production
+    volumes:
+      - ./dependency-manager/:/app
+      - /app/node_modules
+    ports:
+      - 8002:3000
+    env_file: 
+      - dependency-manager/.env.production
+
+  dependency-graph-visualizer:
+    image: livesd/dependency-graph-visualizer
+    restart: unless-stopped
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile.production
+    volumes:
+      - ./glass-base-app/:/app
+      - /app/node_modules
+    ports:
+      - 5000:5000 # probably change this to 80:5000
+    env_file: 
+      - frontend/.env.production  
