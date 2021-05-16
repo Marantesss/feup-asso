@@ -87,20 +87,29 @@ function parse(tree: any, projectName: string): NodeProjectTree {
 }
 
 function encode(tree: NodeProjectTree): {nodes: {id:string, label:string}[], edges: {from:string, to:string}[]} {
-  const iterator = tree.getIterator();
+  const root = tree.getRoot();
+
+  const queue = [root];
 
   const nodes: {id:string, label:string}[] = [];
   const edges: {from:string, to:string}[] = [];
 
-  while (!iterator.isDone) {
-    const node = iterator.currentItem();
+  const visited: Set<string> = new Set<string>();
 
-    nodes.push({ id: node.getId(), label: node.getName() });
-    for (const dependency of node.getDependencies()) {
-      edges.push({ from: node.getId(), to: dependency.getId() });
+  while (queue.length !== 0) {
+    const node = queue.shift();
+
+    if (node !== undefined && !visited.has(node.getId())) {
+      nodes.push({ id: node.getId(), label: node.getName() });
+
+      for (const dependency of node.getDependencies()) {
+        edges.push({ from: node.getId(), to: dependency.getId() });
+
+        queue.push(dependency);
+      }
+
+      visited.add(node.getId());
     }
-
-    iterator.next();
   }
 
   return { nodes, edges };
