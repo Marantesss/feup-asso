@@ -7,8 +7,8 @@ abstract class NodeDependable extends Dependable {
 
   private dependencies: NodeDependable[];
 
-  constructor(name: string, dependencies: NodeDependable[] = [], annotations: NodeAnnotation[] = [], isNpm: boolean = false) {
-    super(name, annotations);
+  constructor(name: string, id: string, dependencies: NodeDependable[] = [], annotations: NodeAnnotation[] = [], isNpm: boolean = false) {
+    super(name, id, annotations);
     this.dependencies = dependencies;
     this._isNpm = isNpm;
   }

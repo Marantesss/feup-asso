@@ -7,13 +7,20 @@ abstract class Dependable implements Visitable {
 
   private name: string;
 
-  constructor(name: string, annotations: Annotation[] = []) {
+  private id: string;
+
+  constructor(name: string, id: string, annotations: Annotation[] = []) {
     this.name = name;
     this.annotations = annotations;
+    this.id = id;
   }
 
   public getName(): string {
     return this.name;
+  }
+
+  public getId(): string {
+    return this.id;
   }
 
   public addAnnotation(annotation: Annotation) {

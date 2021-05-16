@@ -2,6 +2,9 @@ import ProjectTree from '../ProjectTree';
 import NodeComponent from './NodeComponent';
 import NodeDependable from './NodeDependable';
 import NodePackage from './NodePackage';
+import NodeTreeDepthFirstIterator from './NodeTreeDepthFirstIterator';
+
+let id = 0;
 
 class NodeProjectTree implements ProjectTree {
   private root: NodeDependable;
@@ -12,6 +15,10 @@ class NodeProjectTree implements ProjectTree {
 
   public getRoot(): NodeDependable {
     return this.root;
+  }
+
+  public getIterator(): NodeTreeDepthFirstIterator {
+    return new NodeTreeDepthFirstIterator(this.getRoot());
   }
 }
 
@@ -41,18 +48,21 @@ function createPath(root: NodeDependable, path: string[], isNpm: boolean = false
   }
 
   if (isFile(path[0])) {
-    const newComponent = new NodeComponent(path[0], [], [], isNpm);
+    id += 1;
+    const newComponent = new NodeComponent(path[0], id.toString(), [], [], isNpm);
     children.push(newComponent);
     return newComponent;
   }
 
-  const newPackage: NodePackage = new NodePackage(path[0], [], [], isNpm);
+  id += 1;
+  const newPackage: NodePackage = new NodePackage(path[0], id.toString(), [], [], isNpm);
   children.push(newPackage);
   return createPath(newPackage, path.slice(1), isNpm);
 }
 
 function parse(tree: any, projectName: string): NodeProjectTree {
-  const root = new NodePackage(projectName);
+  id += 1;
+  const root = new NodePackage(projectName, id.toString());
   const fileMapping: { [path: string]: NodeDependable } = {};
 
   for (const key of Object.keys(tree)) {
@@ -76,4 +86,23 @@ function parse(tree: any, projectName: string): NodeProjectTree {
   return new NodeProjectTree(root);
 }
 
-export { NodeProjectTree, parse };
+function encode(tree: NodeProjectTree): {nodes: {id:string, label:string}[], edges: {from:string, to:string}[]} {
+  const nodes: {id:string, label:string}[] = [];
+  const edges: {from:string, to:string}[] = [];
+
+  const iterator: NodeTreeDepthFirstIterator = tree.getIterator();
+
+  while (!iterator.isDone) {
+    const node: NodeDependable = iterator.currentItem();
+    nodes.push({ id: node.getId(), label: node.getName() });
+    iterator.next();
+
+    for (const dependency of node.getDependencies()) {
+      edges.push({ from: node.getId(), to: dependency.getId() });
+    }
+  }
+
+  return { nodes, edges };
+}
+
+export { NodeProjectTree, parse, encode };
