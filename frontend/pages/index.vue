@@ -140,7 +140,6 @@ export default {
             color: { background: elem.color },
           }
       })
-      console.log(this.options.groups)
     },
     ...mapActions({
       toggleSidebar: 'toggleSidebar',
