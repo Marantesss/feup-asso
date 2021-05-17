@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SideBar @submitRepoUrl="analyzeRepo" />
+    <SideBar :labels="labels" @submitRepoUrl="analyzeRepo" />
     <div
       v-if="loading"
       :class="['spinner-container', { 'spinner-container-focus': loading }]"

@@ -4,19 +4,40 @@
       <h1 class="title">Live Dependency Manager</h1>
       <h3 class="subtitle">Linda e Girão</h3>
     </div>
-    <div class="container">
+    <div class="form-container">
       <label for="fname">Github Repository URL:</label>
       <input v-model="repoUrl" class="input-text" type="text" name="fname" />
       <button class="button" @click="submitRepoUrl">Analyze</button>
+    </div>
+    <div class="label-container">
+      <h5 class="subtitle">Labels</h5>
+      <Label
+        v-for="label in labels"
+        :key="label.text"
+        :text="label.text"
+        :color="label.color"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Label from '~/components/Label'
 
 export default {
   name: 'SideBar',
+
+  components: {
+    Label,
+  },
+
+  props: {
+    labels: {
+      type: Array,
+      default: () => [],
+    },
+  },
 
   data() {
     return {
@@ -55,9 +76,13 @@ export default {
   transition: all 300ms;
 }
 
-.container {
+.form-container {
   display: flex;
   flex-direction: column;
+}
+
+.label-container {
+  margin: 2rem 0rem;
 }
 
 .close {
