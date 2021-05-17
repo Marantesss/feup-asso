@@ -54,6 +54,15 @@ export default {
           useDefaultGroups: true,
           /* groups styles here */
         },
+        // edge stylings
+        edges: {
+          arrows: 'to',
+        },
+        // physics
+        physics: {
+          enabled: true,
+          stabilization: true,
+        },
         autoResize: true, // the Network will automatically detect when its container is resized, and redraw itself accordingly.
         width: '100%',
         height: '100%',
@@ -82,12 +91,28 @@ export default {
         console.log(err)
       }
 
-      // TO REMOVE: clean group array to string
-      this.nodes.map(
-        (elem) => (elem.group = elem.group[0] ? elem.group[0] : '')
-      )
-
       this.generatePalette(this.getSingleGroups())
+
+      const createHTMLTitle = (annotations) => {
+        if (annotations.length === 0) return
+
+        const element = document.createElement('div')
+        annotations.forEach((annotation) => {
+          const type = document.createElement('h4')
+          type.innerHTML = annotation.type
+          const info = document.createElement('p')
+          info.innerHTML = annotation.info
+
+          element.appendChild(type)
+          element.appendChild(info)
+        })
+        return element
+      }
+
+      // test
+      this.nodes.forEach(
+        (node) => (node.title = createHTMLTitle(node.annotations))
+      )
 
       this.loading = false
 
