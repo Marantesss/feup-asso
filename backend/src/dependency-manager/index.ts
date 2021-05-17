@@ -8,7 +8,7 @@ async function getDependencies(projectPath: string): Promise<any> {
   const dependencies = await madge(projectPath, { includeNpm: true });
   const depObj = dependencies.obj();
   const name = projectPath.split('/');
-  const tree: NodeProjectTree = parse(depObj, name[name.length-1]);
+  const tree: NodeProjectTree = parse(depObj, name[name.length - 1]);
 
   const auditVisitor: NodeAuditVisitor = new NodeAuditVisitor();
   const iterator: NodeTreeDepthFirstIterator = tree.getIterator();
