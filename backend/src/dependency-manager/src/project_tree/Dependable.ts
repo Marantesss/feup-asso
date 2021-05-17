@@ -3,15 +3,12 @@ import Annotation from './Annotation';
 import Visitable from './Visitable';
 
 abstract class Dependable implements Visitable {
-  protected annotations: Annotation[];
-
   private name: string;
 
   private id: string;
 
-  constructor(name: string, id: string, annotations: Annotation[] = []) {
+  constructor(name: string, id: string) {
     this.name = name;
-    this.annotations = annotations;
     this.id = id;
   }
 
@@ -23,9 +20,9 @@ abstract class Dependable implements Visitable {
     return this.id;
   }
 
-  public addAnnotation(annotation: Annotation) {
-    this.annotations.push(annotation);
-  }
+  public abstract addAnnotation(annotation: Annotation): void;
+
+  public abstract getAnnotations(): void;
 
   public abstract accept(visitor: Visitor): void
 

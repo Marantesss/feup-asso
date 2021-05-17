@@ -17,29 +17,25 @@ class NodeAuditVisitor extends NodeVisitor {
     const ex = util.promisify(exec.exec);
 
     try {
-      await ex('npm audit --json', { cwd: projectPath });
-    } catch (error) {
-      this.auditResult = JSON.parse(error.stdout);
-      this.requiresAnalysis = true;
+      const p = await ex('npm audit --json', { cwd: projectPath });
+      this.auditResult = JSON.parse(p.stdout);
 
-      for (const key of Object.keys(this.auditResult.advisories)) {
-        if (!this.parsedResult[this.auditResult.advisories[key].module_name]) {
-          this.parsedResult[this.auditResult.advisories[key].module_name] = [this.auditResult.advisories[key]];
-        } else {
-          this.parsedResult[this.auditResult.advisories[key].module_name].push(this.auditResult.advisories[key]);
-        }
-      }
+      if (this.auditResult.vulnerabilities !== {}) this.requiresAnalysis = true;
+    } catch (error) {
+      console.error(error);
     }
   }
 
   public findProblems(name: string): NodeAnnotation[] {
-    if (!this.requiresAnalysis || !this.parsedResult[name]) {
+    if (!this.requiresAnalysis || !this.auditResult.vulnerabilities[name]) {
       return [];
     }
 
     const annotations: NodeAnnotation[] = [];
 
-    for (const info of this.parsedResult[name]) {
+    const vulnerabilities = this.auditResult.vulnerabilities[name];
+
+    for (const info of vulnerabilities.via) {
       annotations.push(new NodeAnnotation('Security', info.title));
     }
 

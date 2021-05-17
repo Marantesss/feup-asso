@@ -1,4 +1,5 @@
 import ProjectTree from '../ProjectTree';
+import NodeAnnotation from './NodeAnnotation';
 import NodeComponent from './NodeComponent';
 import NodeDependable from './NodeDependable';
 import NodePackage from './NodePackage';
@@ -86,21 +87,44 @@ function parse(tree: any, projectName: string): NodeProjectTree {
   return new NodeProjectTree(root);
 }
 
-function encode(tree: NodeProjectTree):
-  {nodes: {id:string, label:string, group:string[]}[], edges: {from:string, to:string}[]} {
-  const nodes: {id:string, label:string, group:string[]}[] = [];
-  const edges: {from:string, to:string}[] = [];
+interface DependencyGraphNode {
+  id: string,
+  label: string,
+  group: string,
+  annotations?: NodeAnnotation[],
+}
+
+interface DependencyGraphEdge {
+  from: string,
+  to: string,
+}
+
+interface DependencyGraph {
+  nodes: DependencyGraphNode[],
+  edges: DependencyGraphEdge[],
+}
+
+function encode(tree: NodeProjectTree): DependencyGraph {
+  const nodes: DependencyGraphNode[] = [];
+  const edges: DependencyGraphEdge[] = [];
 
   const iterator: NodeTreeDepthFirstIterator = tree.getIterator();
 
   while (!iterator.isDone) {
     const node: NodeDependable = iterator.currentItem();
 
-    const group: string[] = [];
-    if (node.isNpm) group.push('npm');
-    if (node instanceof NodePackage) group.push('dir');
+    let group: string = 'none';
 
-    nodes.push({ id: node.getId(), label: node.getName(), group });
+    if (node instanceof NodePackage) group = 'dir';
+
+    if (node.isNpm) group = 'npm';
+
+    const annotations = node.getAnnotations();
+    if (node.getId() === '12') console.log(annotations);
+
+    nodes.push({
+      id: node.getId(), label: node.getName(), group, annotations,
+    });
 
     iterator.next();
 

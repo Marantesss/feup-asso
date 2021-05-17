@@ -7,8 +7,11 @@ abstract class NodeDependable extends Dependable {
 
   private dependencies: NodeDependable[];
 
+  protected annotations: NodeAnnotation[];
+
   constructor(name: string, id: string, dependencies: NodeDependable[] = [], annotations: NodeAnnotation[] = [], isNpm: boolean = false) {
-    super(name, id, annotations);
+    super(name, id);
+    this.annotations = annotations;
     this.dependencies = dependencies;
     this._isNpm = isNpm;
   }
@@ -27,6 +30,14 @@ abstract class NodeDependable extends Dependable {
 
   public getDependencies(): NodeDependable[] {
     return this.dependencies;
+  }
+
+  public addAnnotation(annotation: NodeAnnotation): void {
+    this.annotations.push(annotation);
+  }
+
+  public getAnnotations(): NodeAnnotation[] {
+    return this.annotations;
   }
 
   public abstract accept(visitor: NodeVisitor): void;
