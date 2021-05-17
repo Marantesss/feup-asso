@@ -9,7 +9,7 @@
       <input v-model="repoUrl" class="input-text" type="text" name="fname" />
       <button class="button" @click="submitRepoUrl">Analyze</button>
     </div>
-    <div class="label-container">
+    <div v-if="labels.length !== 0" class="label-container">
       <h5 class="subtitle">Labels</h5>
       <Label
         v-for="label in labels"

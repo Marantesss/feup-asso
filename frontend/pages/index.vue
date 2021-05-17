@@ -45,18 +45,21 @@ export default {
       nodes: [],
       // create an array with edges
       edges: [],
+      // sidebar color labels
+      labels: [],
+      // networks options
       options: {
         // group styles
         groups: {
-          deprecatedGroup: {
-            color: { background: 'red' },
-            borderWidth: 3,
-          },
+          useDefaultGroups: true,
+          /* groups styles here */
         },
         autoResize: true, // the Network will automatically detect when its container is resized, and redraw itself accordingly.
         width: '100%',
         height: '100%',
       },
+      // color palette
+      palette: ['#61a5c2', '#fdfcdc', '#f07167', '#00afb9', '#fed9b7'],
     }
   },
 
@@ -68,17 +71,51 @@ export default {
     async analyzeRepo(repoUrl) {
       this.loading = true
       try {
-        const res = await this.$axios.get('/', {
+        const { edges, nodes } = await this.$axios.$get('/', {
           repoUrl,
         })
 
-        this.edges = res.data.edges
-        this.nodes = res.data.nodes
+        this.edges = edges
+        this.nodes = nodes
       } catch (err) {
+        this.error = true
         console.log(err)
       }
 
+      // TO REMOVE: clean group array to string
+      this.nodes.map(
+        (elem) => (elem.group = elem.group[0] ? elem.group[0] : '')
+      )
+
+      this.generatePalette(this.getSingleGroups())
+
       this.loading = false
+
+      // update options
+      this.$refs.mynetwork.setOptions(this.options)
+    },
+    getSingleGroups() {
+      const set = new Set()
+      this.nodes.forEach((elem) => set.add(elem.group))
+      return Array.from(set)
+    },
+    generatePalette(groups) {
+      this.labels = []
+
+      for (let index = 0; index < groups.length; index++) {
+        this.labels.push({
+          text: groups[index],
+          color: this.palette[index],
+        })
+      }
+
+      this.labels.forEach((elem) => {
+        if (elem.text !== '')
+          this.options.groups[elem.text] = {
+            color: { background: elem.color },
+          }
+      })
+      console.log(this.options.groups)
     },
     ...mapActions({
       toggleSidebar: 'toggleSidebar',
