@@ -86,15 +86,22 @@ function parse(tree: any, projectName: string): NodeProjectTree {
   return new NodeProjectTree(root);
 }
 
-function encode(tree: NodeProjectTree): {nodes: {id:string, label:string}[], edges: {from:string, to:string}[]} {
-  const nodes: {id:string, label:string}[] = [];
+function encode(tree: NodeProjectTree):
+  {nodes: {id:string, label:string, group:string[]}[], edges: {from:string, to:string}[]} {
+  const nodes: {id:string, label:string, group:string[]}[] = [];
   const edges: {from:string, to:string}[] = [];
 
   const iterator: NodeTreeDepthFirstIterator = tree.getIterator();
 
   while (!iterator.isDone) {
     const node: NodeDependable = iterator.currentItem();
-    nodes.push({ id: node.getId(), label: node.getName() });
+
+    const group: string[] = [];
+    if (node.isNpm) group.push('npm');
+    if (node instanceof NodePackage) group.push('dir');
+
+    nodes.push({ id: node.getId(), label: node.getName(), group });
+
     iterator.next();
 
     for (const dependency of node.getDependencies()) {
