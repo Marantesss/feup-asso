@@ -77,14 +77,10 @@ export default {
   methods: {
     async analyzeRepo(repoUrl) {
       this.loading = true
-      console.log(repoUrl)
-      /*
       const res = await this.$axios.get('/', {
         repoUrl,
       })
       console.log(res)
-      */
-      await new Promise((resolve) => setTimeout(resolve, 1000))
       this.loading = false
     },
     ...mapActions({

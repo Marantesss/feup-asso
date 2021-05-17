@@ -6,15 +6,15 @@ services:
     image: livesd/dependency-manager
     restart: unless-stopped
     build:
-      context: ./dependency-manager/
+      context: ./backend/
       dockerfile: Dockerfile.production
     volumes:
-      - ./dependency-manager/:/app
+      - ./backend/:/app
       - /app/node_modules
     ports:
       - 8002:3000
     env_file: 
-      - dependency-manager/.env.production
+      - backend/.env.production
 
   dependency-graph-visualizer:
     image: livesd/dependency-graph-visualizer
