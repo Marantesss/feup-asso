@@ -3,19 +3,20 @@
     <SideBar @submitRepoUrl="analyzeRepo" />
     <div
       v-if="loading"
-      :class="[{ 'spinner-container-focus': loading }, 'spinner-container']"
+      :class="['spinner-container', { 'spinner-container-focus': loading }]"
     >
       <Spinner />
     </div>
-    <Network
-      id="main-network"
-      ref="mynetwork"
-      :class="{ close: !sidebarOpen, open: sidebarOpen }"
-      :nodes="nodes"
-      :edges="edges"
-      :options="options"
-    >
-    </Network>
+    <client-only>
+      <Network
+        id="main-network"
+        ref="mynetwork"
+        :class="{ close: !sidebarOpen, open: sidebarOpen }"
+        :nodes="nodes"
+        :edges="edges"
+        :options="options"
+      />
+    </client-only>
     <button class="button toggle-sidebar-button" @click="toggleSidebar">
       Toggle Sidebar
     </button>
@@ -41,20 +42,9 @@ export default {
       loading: false,
       error: false,
       // create an array with nodes
-      nodes: [
-        { id: 1, label: 'Node 1', group: 'deprecatedGroup' },
-        { id: 2, label: 'Node 2', color: '#ff0000', group: 'deprecatedGroup' },
-        { id: 3, label: 'Node 3' },
-        { id: 4, label: 'Node 4' },
-        { id: 5, label: 'Node 5' },
-      ],
+      nodes: [],
       // create an array with edges
-      edges: [
-        { from: 1, to: 3 },
-        { from: 1, to: 2 },
-        { from: 2, to: 4 },
-        { from: 2, to: 5 },
-      ],
+      edges: [],
       options: {
         // group styles
         groups: {
@@ -77,10 +67,17 @@ export default {
   methods: {
     async analyzeRepo(repoUrl) {
       this.loading = true
-      const res = await this.$axios.get('/', {
-        repoUrl,
-      })
-      console.log(res)
+      try {
+        const res = await this.$axios.get('/', {
+          repoUrl,
+        })
+
+        this.edges = res.data.edges
+        this.nodes = res.data.nodes
+      } catch (err) {
+        console.log(err)
+      }
+
       this.loading = false
     },
     ...mapActions({
